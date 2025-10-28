@@ -2,14 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { PageHeader, PageHeaderActions } from '@/components/PageHeader';
-import { LoadingState } from '@/components/LoadingState';
-import { BottomNav } from '@/components/BottomNav';
-import { DashboardVisionCollage } from '@/components/dashboard/DashboardVisionCollage';
 import { DashboardHabits } from '@/components/dashboard/DashboardHabits';
-import { CombinedStats } from '@/components/dashboard/CombinedStats';
-import { QuickActions } from '@/components/dashboard/QuickActions';
+import { HorizontalStats } from '@/components/dashboard/HorizontalStats';
+import { HabitStreaks } from '@/components/dashboard/HabitStreaks';
+import { DashboardVisionCollage } from '@/components/dashboard/DashboardVisionCollage';
 import { VisionBoardItemModal } from '@/components/dashboard/VisionBoardItemModal';
+import { LoadingState } from '@/components/LoadingState';
 import { useAuth } from '@/hooks/useAuth';
 import { useHabits } from '@/hooks/useHabits';
 import { useStreaks } from '@/hooks/useStreaks';
@@ -30,12 +28,6 @@ export default function DashboardPage() {
   const { streaks, updateStreaks } = useStreaks(user?.id || null);
   const { items: visionBoardItems } = useVisionBoard(user?.id || null);
   const { latestLog } = useLatestLog(user?.id || null);
-
-  const handleLogout = async () => {
-    const { supabase } = await import('@/lib/supabase');
-    await supabase.auth.signOut();
-    router.push('/');
-  };
 
   const handleToggleHabit = async (
     userHabitId: string,
@@ -77,52 +69,35 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className='min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50'>
-      <PageHeader
-        title='Thrive'
-        navItems={[
-          { label: 'Dashboard', href: '/dashboard' },
-          { label: 'Recipe', href: '/recipe' },
-        ]}
-        actions={
-          <PageHeaderActions
-            onSettings={() => router.push('/settings')}
-            onLogout={handleLogout}
-          />
-        }
-        variant='gradient'
+    <div>
+      <DashboardVisionCollage
+        items={visionBoardItems}
+        onItemClick={setSelectedItem}
       />
 
-      <main className='mx-auto max-w-7xl px-3 pb-16 sm:px-4 md:pb-3 lg:px-6'>
-        <DashboardVisionCollage
-          items={visionBoardItems}
-          onItemClick={setSelectedItem}
-        />
+      <HorizontalStats
+        weight={latestLog?.weight_kg || null}
+        progress={progress}
+        targetWeight={user?.target_weight_kg || undefined}
+        longestStreak={Math.max(...streaks.map(s => s.current_streak || 0), 0)}
+        previousWeight={null}
+        previousProgress={undefined}
+        previousStreak={undefined}
+      />
 
-        <CombinedStats
-          weight={latestLog?.weight_kg || null}
-          progress={progress}
-          targetWeight={user?.target_weight_kg || undefined}
+      <div className='mb-3 grid grid-cols-1 gap-3 lg:grid-cols-2'>
+        <DashboardHabits
           userHabits={userHabits}
-          streaks={streaks}
+          completions={completions}
+          onToggleHabit={handleToggleHabit}
         />
+        <HabitStreaks userHabits={userHabits} streaks={streaks} />
+      </div>
 
-        <div className='mb-3 grid grid-cols-1 gap-3 md:grid-cols-2'>
-          <DashboardHabits
-            userHabits={userHabits}
-            completions={completions}
-            onToggleHabit={handleToggleHabit}
-          />
-          <QuickActions />
-        </div>
-
-        <VisionBoardItemModal
-          item={selectedItem}
-          onClose={() => setSelectedItem(null)}
-        />
-      </main>
-
-      <BottomNav />
+      <VisionBoardItemModal
+        item={selectedItem}
+        onClose={() => setSelectedItem(null)}
+      />
     </div>
   );
 }

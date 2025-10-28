@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Tables } from '@/types/supabase';
 
@@ -31,13 +31,7 @@ export function useVisionBoard(userId: string | null): UseVisionBoardReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (userId) {
-      loadVisionBoardData();
-    }
-  }, [userId]);
-
-  const loadVisionBoardData = async () => {
+  const loadVisionBoardData = useCallback(async () => {
     if (!userId) return;
 
     try {
@@ -54,7 +48,13 @@ export function useVisionBoard(userId: string | null): UseVisionBoardReturn {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      loadVisionBoardData();
+    }
+  }, [userId, loadVisionBoardData]);
 
   const addTextItem = async (
     title: string,

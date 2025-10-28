@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { EmptyState } from '@/components/EmptyState';
-import { Heart, CheckCircle2, XCircle } from 'lucide-react';
+import { Heart, CheckCircle2, XCircle, Plus, Camera } from 'lucide-react';
 import { UserHabitWithPreset, DailyHabitCompletion } from '@/types/app';
 
 interface DashboardHabitsProps {
@@ -42,11 +42,25 @@ export function DashboardHabits({
             <Heart className='h-4 w-4 text-indigo-600' />
             Today&apos;s Habits
           </CardTitle>
-          <Link href='/settings'>
-            <Button variant='ghost' size='sm'>
-              Manage
-            </Button>
-          </Link>
+          <div className='flex items-center gap-2'>
+            <Link href='/log'>
+              <Button variant='outline' size='sm' className='h-8 px-2'>
+                <Plus className='mr-1 h-3 w-3' />
+                Log
+              </Button>
+            </Link>
+            <Link href='/photos'>
+              <Button variant='outline' size='sm' className='h-8 px-2'>
+                <Camera className='mr-1 h-3 w-3' />
+                Photos
+              </Button>
+            </Link>
+            <Link href='/settings'>
+              <Button variant='ghost' size='sm'>
+                Manage
+              </Button>
+            </Link>
+          </div>
         </div>
       </CardHeader>
       <CardContent className='space-y-2'>

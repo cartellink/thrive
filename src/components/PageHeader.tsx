@@ -1,13 +1,9 @@
 import * as React from 'react';
 import { ArrowLeft, Settings, LogOut } from 'lucide-react';
 import { IconButton } from '@/components/ui/icon-button';
+import { Navigation } from '@/components/Navigation';
 import { cn } from '@/lib/utils';
-import { useRouter, usePathname } from 'next/navigation';
-
-interface NavItem {
-  label: string;
-  href: string;
-}
+import { useRouter } from 'next/navigation';
 
 interface PageHeaderProps {
   title: string;
@@ -17,7 +13,7 @@ interface PageHeaderProps {
   actions?: React.ReactNode;
   className?: string;
   variant?: 'default' | 'gradient' | 'glass';
-  navItems?: NavItem[];
+  showNavigation?: boolean;
 }
 
 export function PageHeader({
@@ -28,10 +24,9 @@ export function PageHeader({
   actions,
   className,
   variant = 'default',
-  navItems = [],
+  showNavigation = true,
 }: PageHeaderProps) {
   const router = useRouter();
-  const pathname = usePathname();
 
   const handleBack = () => {
     if (onBack) {
@@ -89,31 +84,7 @@ export function PageHeader({
           </div>
 
           {/* Navigation Items */}
-          {navItems.length > 0 && (
-            <nav className='hidden items-center gap-1 md:flex'>
-              {navItems.map(item => {
-                const isActive = pathname === item.href;
-                return (
-                  <button
-                    key={item.href}
-                    onClick={() => router.push(item.href)}
-                    className={cn(
-                      'cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
-                      isActive
-                        ? variant === 'glass'
-                          ? 'bg-white/20 text-white'
-                          : 'bg-blue-100 text-blue-700'
-                        : variant === 'glass'
-                          ? 'text-white/80 hover:bg-white/10 hover:text-white'
-                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-                    )}
-                  >
-                    {item.label}
-                  </button>
-                );
-              })}
-            </nav>
-          )}
+          {showNavigation && <Navigation variant={variant} />}
 
           {actions && <div className='flex items-center gap-2'>{actions}</div>}
         </div>

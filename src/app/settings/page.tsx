@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,11 +47,7 @@ export default function SettingsPage() {
     addHabitFromPreset,
   } = useHabits(user?.id || null);
 
-  useEffect(() => {
-    loadSettingsData();
-  }, []);
-
-  const loadSettingsData = async () => {
+  const loadSettingsData = useCallback(async () => {
     try {
       // Load habit presets
       const { data: presetsData } = await supabase
@@ -77,7 +73,11 @@ export default function SettingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [profile, user]);
+
+  useEffect(() => {
+    loadSettingsData();
+  }, [loadSettingsData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

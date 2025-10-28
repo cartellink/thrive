@@ -27,6 +27,30 @@ export function ProgressChart({
   color,
   unit = '',
 }: ProgressChartProps) {
+  // Calculate dynamic Y-axis range based on actual data
+  const getYAxisDomain = () => {
+    if (!data || data.length === 0) return [0, 100];
+
+    const values = data
+      .map(d => d[dataKey as keyof ChartData])
+      .filter(val => val !== null && val !== undefined) as number[];
+
+    if (values.length === 0) return [0, 100];
+
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const range = max - min;
+
+    // Add 10% buffer on each side, but ensure minimum range for visibility
+    const buffer = Math.max(range * 0.1, range * 0.05, 0.5);
+    const domainMin = Math.max(0, min - buffer);
+    const domainMax = max + buffer;
+
+    return [domainMin, domainMax];
+  };
+
+  const yAxisDomain = getYAxisDomain();
+
   return (
     <Card>
       <CardHeader>
@@ -48,10 +72,17 @@ export function ProgressChart({
                   })
                 }
               />
-              <YAxis tick={{ fontSize: 12 }} />
+              <YAxis
+                domain={yAxisDomain}
+                tick={{ fontSize: 12 }}
+                tickFormatter={(value: number) => `${value.toFixed(1)}${unit}`}
+              />
               <Tooltip
                 labelFormatter={value => new Date(value).toLocaleDateString()}
-                formatter={(value: number) => [`${value}${unit}`, dataKey]}
+                formatter={(value: number) => [
+                  `${value?.toFixed(1)}${unit}`,
+                  dataKey,
+                ]}
               />
               <Line
                 type='monotone'

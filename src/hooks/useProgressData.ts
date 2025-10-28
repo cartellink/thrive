@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Tables } from '@/types/supabase';
 import { getDateRange } from '@/lib/helpers';
@@ -55,13 +55,7 @@ export function useProgressData(userId: string | null): UseProgressDataReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (userId) {
-      loadProgressData();
-    }
-  }, [userId]);
-
-  const loadProgressData = async () => {
+  const loadProgressData = useCallback(async () => {
     if (!userId) return;
 
     try {
@@ -106,7 +100,13 @@ export function useProgressData(userId: string | null): UseProgressDataReturn {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      loadProgressData();
+    }
+  }, [userId, loadProgressData]);
 
   const calculateWeeklySummary = (): WeeklySummary => {
     const now = new Date();

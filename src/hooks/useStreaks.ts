@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Tables } from '@/types/supabase';
 import { getTodayString } from '@/lib/helpers';
@@ -21,13 +21,7 @@ export function useStreaks(userId: string | null): UseStreaksReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (userId) {
-      loadStreaks();
-    }
-  }, [userId]);
-
-  const loadStreaks = async () => {
+  const loadStreaks = useCallback(async () => {
     if (!userId) return;
 
     try {
@@ -43,7 +37,13 @@ export function useStreaks(userId: string | null): UseStreaksReturn {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      loadStreaks();
+    }
+  }, [userId, loadStreaks]);
 
   const updateStreaks = async (
     userHabitId: string,
@@ -108,8 +108,13 @@ export function useStreaks(userId: string | null): UseStreaksReturn {
       } else {
         // Target not met today
         if (existingStreak?.last_updated === today) {
-          // We're on the same day - set to 0 but don't update last_updated
-          newStreak = 0;
+          // We're on the same day - if we had a streak and we're just untoggling, decrement by 1
+          // This handles the case where user toggles a habit off after completing it
+          if (existingStreak.current_streak > 0) {
+            newStreak = Math.max(0, existingStreak.current_streak - 1);
+          } else {
+            newStreak = 0;
+          }
         } else {
           // Different day and not completed - streak broken
           newStreak = 0;

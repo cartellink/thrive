@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Tables } from '@/types/supabase';
 
@@ -16,13 +16,7 @@ export function useLatestLog(userId: string | null): UseLatestLogReturn {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (userId) {
-      loadLatestLog();
-    }
-  }, [userId]);
-
-  const loadLatestLog = async () => {
+  const loadLatestLog = useCallback(async () => {
     if (!userId) return;
 
     try {
@@ -43,12 +37,18 @@ export function useLatestLog(userId: string | null): UseLatestLogReturn {
 
       setLatestLog(logData || null);
     } catch (err) {
-      console.error("Error loading latest log:", err);
-      setError("Failed to load latest log");
+      console.error('Error loading latest log:', err);
+      setError('Failed to load latest log');
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      loadLatestLog();
+    }
+  }, [userId, loadLatestLog]);
 
   const refetch = async () => {
     await loadLatestLog();
