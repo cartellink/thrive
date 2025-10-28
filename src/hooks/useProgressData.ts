@@ -18,6 +18,7 @@ interface ChartDataPoint {
   bodyFat: number | null;
   muscleMass: number | null;
   bmi: number | null;
+  [key: string]: string | number | null | undefined;
 }
 
 interface HabitStat {

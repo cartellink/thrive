@@ -70,7 +70,10 @@ export function PageHeader({
                 <ArrowLeft className='h-4 w-4' />
               </IconButton>
             )}
-            <div className='flex items-center gap-2'>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className='flex cursor-pointer items-center gap-2 transition-opacity hover:opacity-80'
+            >
               <div className='flex h-6 w-6 items-center justify-center rounded-lg bg-blue-600'>
                 <span className='text-xs font-bold text-white'>T</span>
               </div>
@@ -82,7 +85,7 @@ export function PageHeader({
               >
                 {title}
               </h1>
-            </div>
+            </button>
           </div>
 
           {/* Navigation Items */}
@@ -95,7 +98,7 @@ export function PageHeader({
                     key={item.href}
                     onClick={() => router.push(item.href)}
                     className={cn(
-                      'rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
+                      'cursor-pointer rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
                       isActive
                         ? variant === 'glass'
                           ? 'bg-white/20 text-white'

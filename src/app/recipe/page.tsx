@@ -2,18 +2,23 @@
 
 import { PageHeader, PageHeaderActions } from '@/components/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LoadingState } from '@/components/LoadingState';
 import { useAuth } from '@/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 
 export default function RecipePage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { loading: authLoading } = useAuth();
 
   const handleLogout = async () => {
     const { supabase } = await import('@/lib/supabase');
     await supabase.auth.signOut();
     router.push('/');
   };
+
+  if (authLoading) {
+    return <LoadingState message='Loading recipes...' size='lg' />;
+  }
 
   return (
     <div className='min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-purple-50'>

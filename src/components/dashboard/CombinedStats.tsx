@@ -1,13 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { TrendingDown, Trophy, Flame, Target, Zap } from 'lucide-react';
+import { TrendingDown, Trophy, Flame, Zap } from 'lucide-react';
 import { UserHabitWithPreset, HabitStreak } from '@/types/app';
 import { cn } from '@/lib/utils';
 
 interface CombinedStatsProps {
   weight: number | null;
   progress: number;
-  daysSince: number;
   targetWeight?: number;
   userHabits: UserHabitWithPreset[];
   streaks: HabitStreak[];
@@ -16,21 +15,15 @@ interface CombinedStatsProps {
 export function CombinedStats({
   weight,
   progress,
-  daysSince,
   targetWeight,
   userHabits,
   streaks,
 }: CombinedStatsProps) {
   // Calculate motivational metrics
-  const totalActiveStreaks = streaks.reduce(
-    (sum, streak) => sum + streak.current_streak,
-    0
-  );
-  const longestStreak = Math.max(...streaks.map(s => s.current_streak), 0);
-  const habitsOnTrack = streaks.filter(s => s.current_streak >= 3).length;
-  const streakMotivation =
-    habitsOnTrack > 0 ? (habitsOnTrack / userHabits.length) * 100 : 0;
-
+  const longestStreak = Math.max(...streaks.map(s => s.current_streak || 0), 0);
+  const habitsOnTrack = streaks.filter(
+    s => (s.current_streak || 0) >= 3
+  ).length;
   return (
     <div className='mb-3 grid grid-cols-1 gap-3 md:grid-cols-2'>
       {/* Left Column - Stats Cards */}

@@ -8,6 +8,7 @@ import {
   CollageLayout,
   ThemeColor,
 } from '@/types/app';
+import { getRandomMotivationalQuotes, THEME_COLORS } from '@/lib/constants';
 
 interface DashboardVisionCollageProps {
   items: VisionBoardItem[];
@@ -114,7 +115,8 @@ const calculateCardSizes = (totalCards: number) => {
 const generateCollageItems = (items: VisionBoardItem[]) => {
   const sizes = calculateCardSizes(items.length);
 
-  return items.map(item => {
+  // Convert vision board items to collage items first
+  const visionItems = items.map(item => {
     const sizeVariation = (Math.random() - 0.5) * sizes.variation;
     const baseWidth = sizes.baseSize + sizes.baseSize * sizeVariation;
     const baseHeight = sizes.baseSize + sizes.baseSize * sizeVariation;
@@ -125,14 +127,55 @@ const generateCollageItems = (items: VisionBoardItem[]) => {
     const zIndex = Math.floor(Math.random() * 20) + 1;
 
     return {
-      ...item,
+      id: item.id,
+      title: item.title,
+      image_url: item.image_url,
+      theme: (item.theme as ThemeColor) || undefined,
       width,
       height,
       rotation,
       zIndex,
-      isTextCard: !item.image_url,
+      isMotivational: false,
+      randomIndex: undefined, // Vision items don't need random index
     };
   });
+
+  // Generate motivational quotes to fill empty spaces
+  const quotesNeeded = Math.max(0, 6 - visionItems.length); // Ensure at least 6 total items
+  const motivationalQuotes = getRandomMotivationalQuotes(quotesNeeded);
+
+  // Convert motivational quotes to collage items
+  const quoteItems = motivationalQuotes.map((quote, index) => {
+    const sizeVariation = (Math.random() - 0.5) * sizes.variation;
+    const baseWidth = sizes.baseSize + sizes.baseSize * sizeVariation;
+    const baseHeight = sizes.baseSize + sizes.baseSize * sizeVariation;
+
+    const width = Math.max(sizes.minSize, Math.min(sizes.maxSize, baseWidth));
+    const height = Math.max(sizes.minSize, Math.min(sizes.maxSize, baseHeight));
+    const rotation = (Math.random() - 0.5) * 10;
+    const zIndex = Math.floor(Math.random() * 20) + 1;
+
+    // Use random colors for motivational quotes to make them visually distinct
+    const theme = THEME_COLORS[
+      Math.floor(Math.random() * THEME_COLORS.length)
+    ] as ThemeColor;
+    const randomIndex = Math.floor(Math.random() * 10);
+
+    return {
+      id: `quote-${index}`,
+      title: quote,
+      image_url: null,
+      theme,
+      width,
+      height,
+      rotation,
+      zIndex,
+      isMotivational: true,
+      randomIndex, // Store the random index for use in render
+    };
+  });
+
+  return [...visionItems, ...quoteItems];
 };
 
 export function DashboardVisionCollage({
@@ -209,7 +252,7 @@ export function DashboardVisionCollage({
         className='relative w-full px-4 pb-4 lg:px-6 lg:pb-6'
         style={{ minHeight: '320px' }}
       >
-        {layout.map((position, index) => {
+        {layout.map(position => {
           const item = collageItems.find(i => i.id === position.id);
           if (!item) return null;
 
@@ -225,7 +268,18 @@ export function DashboardVisionCollage({
                 transform: `rotate(${position.rotation}deg)`,
                 zIndex: position.zIndex,
               }}
-              onClick={() => onItemClick(item as VisionBoardItem)}
+              onClick={() => {
+                // Only call onItemClick for actual vision board items, not quotes
+                if (!item.isMotivational) {
+                  // Find the original vision board item
+                  const originalItem = items.find(
+                    original => original.id === item.id
+                  );
+                  if (originalItem) {
+                    onItemClick(originalItem);
+                  }
+                }
+              }}
             >
               {item.image_url ? (
                 <div className='group relative h-full w-full cursor-pointer'>
@@ -246,7 +300,11 @@ export function DashboardVisionCollage({
                 <TextCard
                   text={item.title || 'Goal'}
                   theme={(item.theme as ThemeColor) || 'amber'}
-                  index={index}
+                  index={
+                    item.isMotivational
+                      ? item.randomIndex || 0
+                      : collageItems.findIndex(ci => ci.id === item.id)
+                  }
                   width={position.width}
                   height={position.height}
                   rotation={position.rotation}

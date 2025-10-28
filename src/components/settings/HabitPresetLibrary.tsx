@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import { HabitPreset, HabitCategory } from '@/types/app';
+import { HabitPreset } from '@/types/app';
 import { HABIT_CATEGORIES } from '@/lib/constants';
 
 interface HabitPresetLibraryProps {

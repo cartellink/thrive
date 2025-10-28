@@ -113,6 +113,7 @@ export interface CollageItem {
   image_url?: string | null;
   theme?: ThemeColor;
   isMotivational?: boolean;
+  randomIndex?: number;
   width?: number;
   height?: number;
   rotation?: number;
@@ -127,6 +128,15 @@ export interface CollageLayout {
   height: number;
   rotation: number;
   zIndex: number;
+}
+
+export interface ChartData {
+  date: string;
+  weight?: number | null;
+  bodyFat?: number | null;
+  muscleMass?: number | null;
+  bmi?: number | null;
+  [key: string]: string | number | null | undefined;
 }
 
 // Modal types

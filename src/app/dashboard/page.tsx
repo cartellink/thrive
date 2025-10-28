@@ -25,7 +25,7 @@ export default function DashboardPage() {
   const router = useRouter();
 
   // Use custom hooks for data management
-  const { user, profile, loading: authLoading } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { userHabits, completions, toggleHabit } = useHabits(user?.id || null);
   const { streaks, updateStreaks } = useStreaks(user?.id || null);
   const { items: visionBoardItems } = useVisionBoard(user?.id || null);
@@ -57,11 +57,6 @@ export default function DashboardPage() {
     latestLog?.weight_kg || null,
     user?.starting_weight_kg || null,
     user?.target_weight_kg || null
-  );
-
-  const daysSince = Math.floor(
-    (Date.now() - new Date(user?.created_at || Date.now()).getTime()) /
-      (1000 * 60 * 60 * 24)
   );
 
   if (authLoading) {
@@ -107,7 +102,6 @@ export default function DashboardPage() {
         <CombinedStats
           weight={latestLog?.weight_kg || null}
           progress={progress}
-          daysSince={daysSince}
           targetWeight={user?.target_weight_kg || undefined}
           userHabits={userHabits}
           streaks={streaks}

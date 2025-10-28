@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Tables } from '@/types/supabase';
@@ -20,11 +20,7 @@ export function useAuth(): UseAuthReturn {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    loadAuthData();
-  }, []);
-
-  const loadAuthData = async () => {
+  const loadAuthData = useCallback(async () => {
     try {
       const {
         data: { user: authUser },
@@ -63,7 +59,11 @@ export function useAuth(): UseAuthReturn {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    loadAuthData();
+  }, [loadAuthData]);
 
   return { user, profile, loading, error };
 }

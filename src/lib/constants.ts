@@ -118,7 +118,30 @@ export const MOTIVATIONAL_QUOTES = [
   "Champions are made when nobody's watching",
   'The comeback is always stronger than the setback',
   "Today's struggle is tomorrow's strength",
+  "Believe you can and you're halfway there",
+  'The future belongs to those who believe in their dreams',
+  'What lies behind us and what lies before us are tiny matters compared to what lies within us',
+  'The only way to do great work is to love what you do',
+  'Success is not final, failure is not fatal: it is the courage to continue that counts',
+  'You are never too old to set another goal or to dream a new dream',
+  'The way to get started is to quit talking and begin doing',
+  "Don't be pushed around by the fears in your mind. Be led by the dreams in your heart",
+  'The only impossible journey is the one you never begin',
+  'Life is 10% what happens to you and 90% how you react to it',
 ];
+
+// Function to generate a random motivational quote
+export function getRandomMotivationalQuote(): string {
+  return MOTIVATIONAL_QUOTES[
+    Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length)
+  ];
+}
+
+// Function to generate multiple random quotes (ensuring no duplicates)
+export function getRandomMotivationalQuotes(count: number): string[] {
+  const shuffled = [...MOTIVATIONAL_QUOTES].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, Math.min(count, MOTIVATIONAL_QUOTES.length));
+}
 
 // Form field configurations
 export const PROFILE_FORM_FIELDS = [

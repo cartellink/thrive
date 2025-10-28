@@ -45,15 +45,17 @@ export function ProfileForm({
             <Input
               id={field.id}
               type={field.type}
-              placeholder={field.placeholder}
+              placeholder={
+                'placeholder' in field ? field.placeholder : undefined
+              }
               value={formData[field.id as keyof typeof formData]}
               onChange={e => onInputChange(field.id, e.target.value)}
-              step={field.step}
-              min={field.min}
-              max={field.max}
+              step={'step' in field ? field.step : undefined}
+              min={'min' in field ? field.min : undefined}
+              max={'max' in field ? field.max : undefined}
               required={field.required}
             />
-            {field.helpText && (
+            {'helpText' in field && field.helpText && (
               <p className='text-sm text-gray-500'>{field.helpText}</p>
             )}
           </div>

@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { StatCard } from '@/components/StatCard';
-import { TrendingDown, TrendingUp, Target, Calendar } from 'lucide-react';
+import { TrendingDown, Calendar } from 'lucide-react';
 
 interface WeeklySummaryCardProps {
   weeklyData: {
@@ -22,14 +22,17 @@ export function WeeklySummaryCard({ weeklyData }: WeeklySummaryCardProps) {
       icon: TrendingDown,
       value: `${weeklyData.averageWeight.toFixed(1)} kg`,
       label: 'Avg Weight',
-      change: weeklyData.weightChange,
+      trend: {
+        value: Math.abs(weeklyData.weightChange),
+        isPositive: weeklyData.weightChange >= 0,
+        label: weeklyData.weightChange >= 0 ? 'Weight gain' : 'Weight loss',
+      },
       color: 'blue' as const,
     },
     {
       icon: Calendar,
       value: `${weeklyData.totalLogs}/7`,
       label: 'Days Logged',
-      change: 0,
       color: 'green' as const,
     },
   ];
@@ -50,7 +53,7 @@ export function WeeklySummaryCard({ weeklyData }: WeeklySummaryCardProps) {
               icon={stat.icon}
               value={stat.value}
               label={stat.label}
-              change={stat.change}
+              trend={stat.trend}
               color={stat.color}
             />
           ))}
