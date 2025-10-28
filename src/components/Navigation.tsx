@@ -13,7 +13,7 @@ interface NavigationProps {
 
 const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard' },
-  { label: 'Recipe', href: '/recipe' },
+  { label: 'Nutrition', href: '/nutrition' },
   { label: 'Progress', href: '/progress' },
   { label: 'Vision Board', href: '/vision-board' },
 ];

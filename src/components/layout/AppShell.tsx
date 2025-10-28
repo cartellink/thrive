@@ -16,7 +16,7 @@ interface AppShellProps {
 // Map paths to page titles (currently unused but kept for future use)
 // const PAGE_TITLES: Record<string, string> = {
 //   '/dashboard': 'Thrive',
-//   '/recipe': 'Thrive',
+//   '/nutrition': 'Nutrition Tracker',
 //   '/progress': 'Progress Tracking',
 //   '/vision-board': 'Vision Board',
 //   '/log': 'Daily Log',
@@ -34,7 +34,7 @@ export function AppShell({
   const router = useRouter();
 
   // const pageTitle = PAGE_TITLES[pathname] || 'Thrive';
-  // const isMainPage = pathname === '/dashboard' || pathname === '/recipe';
+  // const isMainPage = pathname === '/dashboard' || pathname === '/nutrition';
 
   const handleLogout = async () => {
     const { supabase } = await import('@/lib/supabase');

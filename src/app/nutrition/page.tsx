@@ -4,22 +4,22 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { LoadingState } from '@/components/LoadingState';
 import { useAuth } from '@/hooks/useAuth';
 
-export default function RecipePage() {
+export default function NutritionPage() {
   const { loading: authLoading } = useAuth();
 
   if (authLoading) {
-    return <LoadingState message='Loading recipes...' size='lg' />;
+    return <LoadingState message='Loading nutrition tracker...' size='lg' />;
   }
 
   return (
     <div className='py-6'>
       <Card>
         <CardHeader>
-          <CardTitle>Recipe Collection</CardTitle>
+          <CardTitle>Daily Nutrition Tracker</CardTitle>
         </CardHeader>
         <CardContent>
           <p className='text-gray-600'>
-            Your healthy recipe collection will be available here soon!
+            Track your daily calories, macronutrients, and nutrition goals here!
           </p>
         </CardContent>
       </Card>
