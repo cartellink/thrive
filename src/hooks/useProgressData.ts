@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Tables } from '@/types/supabase';
-import { getDateRange } from '@/lib/helpers';
+import { getDateRange, formatDateToISO } from '@/lib/helpers';
 
 type DailyLog = Tables<'daily_logs'>;
 type UserHabit = Tables<'user_habits'>;
@@ -132,7 +132,7 @@ export function useProgressData(userId: string | null): UseProgressDataReturn {
       const completedDays = Array.from({ length: totalDays }, (_, i) => {
         const date = new Date(weekStart);
         date.setDate(date.getDate() + i);
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = formatDateToISO(date);
 
         const dayCompletion = weekCompletions.find(
           c => c.user_habit_id === habit.id && c.completion_date === dateStr

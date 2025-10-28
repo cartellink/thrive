@@ -18,6 +18,7 @@ import { AppShell } from '@/components/layout/AppShell';
 import { Save } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Tables } from '@/types/supabase';
+import { getTodayString } from '@/lib/helpers';
 
 // Type aliases for cleaner usage
 type User = Tables<'users'>;
@@ -65,7 +66,7 @@ export default function LogPage() {
 
       setUser(userData);
 
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayString();
       const { data: logData } = await supabase
         .from('daily_logs')
         .select('*')
@@ -103,7 +104,7 @@ export default function LogPage() {
         return;
       }
 
-      const today = new Date().toISOString().split('T')[0];
+      const today = getTodayString();
 
       const logData = {
         user_id: user.id,

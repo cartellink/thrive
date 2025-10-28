@@ -12,6 +12,7 @@ import {
   AuthActions,
 } from '@/components/layout/AuthLayout';
 import { supabase } from '@/lib/supabase';
+import { formatDateToISO } from '@/lib/helpers';
 
 export default function OnboardingPage() {
   const [heightCm, setHeightCm] = useState('');
@@ -26,7 +27,7 @@ export default function OnboardingPage() {
     // Set default target date to 6 months from now
     const sixMonthsFromNow = new Date();
     sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
-    setTargetDate(sixMonthsFromNow.toISOString().split('T')[0]);
+    setTargetDate(formatDateToISO(sixMonthsFromNow));
   }, []);
 
   const handleOnboarding = async (e: React.FormEvent) => {

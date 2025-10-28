@@ -11,8 +11,6 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Heart, Plus, LogOut } from 'lucide-react';
-import { PageHeader, PageHeaderActions } from '@/components/PageHeader';
-import { AppShell } from '@/components/layout/AppShell';
 import { HabitPresetLibrary } from '@/components/settings/HabitPresetLibrary';
 import { HabitListItem } from '@/components/settings/HabitListItem';
 import { ProfileForm } from '@/components/settings/ProfileForm';
@@ -152,132 +150,122 @@ export default function SettingsPage() {
   }
 
   return (
-    <AppShell>
-      <PageHeader
-        title='Settings'
-        showBackButton={true}
-        backHref='/dashboard'
-        actions={<PageHeaderActions onLogout={handleLogout} />}
-        variant='gradient'
-      />
+    <div className='space-y-6'>
+      {/* Profile Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Profile Information</CardTitle>
+          <CardDescription>
+            Update your personal information and goals
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ProfileForm
+            formData={formData}
+            onInputChange={handleInputChange}
+            onSubmit={handleSubmit}
+            saving={saving}
+            error={error}
+          />
+        </CardContent>
+      </Card>
 
-      <div className='space-y-6'>
-        {/* Profile Settings */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Profile Information</CardTitle>
-            <CardDescription>
-              Update your personal information and goals
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ProfileForm
-              formData={formData}
-              onInputChange={handleInputChange}
-              onSubmit={handleSubmit}
-              saving={saving}
-              error={error}
-            />
-          </CardContent>
-        </Card>
+      {/* Habit Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle className='flex items-center gap-2'>
+            <Heart className='h-5 w-5' />
+            Habit Tracking
+          </CardTitle>
+          <CardDescription>
+            Manage the daily habits you want to track
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className='space-y-4'>
+            {/* Active Habits List */}
+            {userHabits.length > 0 ? (
+              <div className='space-y-2'>
+                {userHabits.map((habit, index) => (
+                  <HabitListItem
+                    key={habit.id}
+                    habit={habit}
+                    index={index}
+                    totalHabits={userHabits.length}
+                    onUpdateDailyTarget={updateDailyTarget}
+                    onMoveHabit={moveHabit}
+                    onRemoveHabit={removeHabit}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className='py-8 text-center text-gray-500'>
+                <Heart className='mx-auto mb-3 h-12 w-12 text-gray-300' />
+                <p className='text-sm'>No habits added yet</p>
+                <p className='mt-1 text-xs text-gray-400'>
+                  Add habits from the library below
+                </p>
+              </div>
+            )}
 
-        {/* Habit Management */}
-        <Card>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <Heart className='h-5 w-5' />
-              Habit Tracking
-            </CardTitle>
-            <CardDescription>
-              Manage the daily habits you want to track
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className='space-y-4'>
-              {/* Active Habits List */}
-              {userHabits.length > 0 ? (
-                <div className='space-y-2'>
-                  {userHabits.map((habit, index) => (
-                    <HabitListItem
-                      key={habit.id}
-                      habit={habit}
-                      index={index}
-                      totalHabits={userHabits.length}
-                      onUpdateDailyTarget={updateDailyTarget}
-                      onMoveHabit={moveHabit}
-                      onRemoveHabit={removeHabit}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className='py-8 text-center text-gray-500'>
-                  <Heart className='mx-auto mb-3 h-12 w-12 text-gray-300' />
-                  <p className='text-sm'>No habits added yet</p>
-                  <p className='mt-1 text-xs text-gray-400'>
-                    Add habits from the library below
-                  </p>
-                </div>
-              )}
-
-              {/* Add Habit Button */}
-              <Button
-                onClick={() => setShowPresetLibrary(!showPresetLibrary)}
-                variant='outline'
-              >
-                <Plus className='mr-2 h-4 w-4' />
-                {showPresetLibrary
-                  ? 'Hide Habit Library'
-                  : 'Add Habit from Library'}
-              </Button>
-
-              {/* Preset Library */}
-              {showPresetLibrary && (
-                <HabitPresetLibrary
-                  habitPresets={habitPresets}
-                  userHabits={
-                    userHabits as Array<{ habit_preset_id?: string | null }>
-                  }
-                  onAddHabit={addHabitFromPreset}
-                />
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Account Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className='flex items-center gap-2'>
-              <LogOut className='h-5 w-5' />
-              Account Actions
-            </CardTitle>
-            <CardDescription>Manage your account</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button variant='destructive' onClick={handleLogout}>
-              <LogOut className='mr-2 h-4 w-4' />
-              Sign Out
+            {/* Add Habit Button */}
+            <Button
+              onClick={() => setShowPresetLibrary(!showPresetLibrary)}
+              variant='outline'
+            >
+              <Plus className='mr-2 h-4 w-4' />
+              {showPresetLibrary
+                ? 'Hide Habit Library'
+                : 'Add Habit from Library'}
             </Button>
-          </CardContent>
-        </Card>
 
-        {/* App Info */}
-        <Card>
-          <CardHeader>
-            <CardTitle>About Thrive</CardTitle>
-            <CardDescription>
-              Your personal weight loss accountability partner
-            </CardDescription>
-          </CardHeader>
-          <CardContent className='text-sm text-gray-600'>
-            <p className='mb-2'>
-              Thrive helps you track your fitness journey with daily metrics,
-              habit tracking, progress photos, and personalized motivation.
-            </p>
-            <p>Version 1.0.0 - Built with Next.js and Supabase</p>
-          </CardContent>
-        </Card>
-      </div>
-    </AppShell>
+            {/* Preset Library */}
+            {showPresetLibrary && (
+              <HabitPresetLibrary
+                habitPresets={habitPresets}
+                userHabits={
+                  userHabits as Array<{ habit_preset_id?: string | null }>
+                }
+                onAddHabit={addHabitFromPreset}
+              />
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Account Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className='flex items-center gap-2'>
+            <LogOut className='h-5 w-5' />
+            Account Actions
+          </CardTitle>
+          <CardDescription>Manage your account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button variant='destructive' onClick={handleLogout}>
+            <LogOut className='mr-2 h-4 w-4' />
+            Sign Out
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* App Info */}
+      <Card>
+        <CardHeader>
+          <CardTitle>About Thrive</CardTitle>
+          <CardDescription>
+            Your personal weight loss accountability partner
+          </CardDescription>
+        </CardHeader>
+        <CardContent className='text-sm text-gray-600'>
+          <p className='mb-2'>
+            Thrive helps you track your fitness journey with daily metrics,
+            habit tracking, progress photos, and personalized motivation.
+          </p>
+          <p>Version 1.0.0 - Built with Next.js and Supabase</p>
+        </CardContent>
+      </Card>
+    </div>
   );
 }
