@@ -1,0 +1,46 @@
+# Supabase Cursor Rules
+
+## Database Management Rules
+
+### ❌ NEVER DO THESE:
+- **NEVER run `npx supabase db reset`** - This destroys all data and recreates the database
+- **NEVER run `npx supabase` commands** - Use the Supabase CLI directly or web interface
+- **NEVER use `supabase db reset`** - This will wipe all user data
+- **NEVER drop tables or columns without explicit user permission**
+- **NEVER run destructive database operations**
+
+### ✅ SAFE DATABASE OPERATIONS:
+- Create new migrations using `supabase migration new <name>`
+- Apply migrations using `supabase db push` (if available)
+- Use the Supabase web dashboard for database management
+- Query data using the Supabase client in code
+- Create new tables, columns, indexes via migrations
+- Update RLS policies via migrations
+
+### Migration Guidelines:
+- Always create new migration files for schema changes
+- Test migrations on development data first
+- Include rollback instructions in migration comments
+- Use `IF EXISTS` and `IF NOT EXISTS` clauses for safety
+- Never modify existing migration files
+
+### Data Safety:
+- Always backup data before major changes
+- Use soft deletes instead of hard deletes when possible
+- Preserve user data integrity at all costs
+- Test all changes in development environment first
+
+### Supabase Client Usage:
+- Use `supabase.from('table').select()` for queries
+- Use `supabase.from('table').insert()` for inserts
+- Use `supabase.from('table').update()` for updates
+- Use `supabase.from('table').delete()` for deletes
+- Always handle errors properly in client code
+
+## Emergency Procedures:
+If database issues occur:
+1. Check Supabase dashboard for errors
+2. Review migration history
+3. Create new migration to fix issues
+4. Contact user before any destructive operations
+5. Never reset database without explicit user consent

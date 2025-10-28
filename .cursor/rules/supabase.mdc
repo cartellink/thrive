@@ -1,0 +1,109 @@
+---
+alwaysApply: true
+---
+
+# Supabase Database Management Rules
+
+## 🚫 PROHIBITED ACTIONS
+
+### Database Reset Commands
+- **NEVER** run `npx supabase db reset`
+- **NEVER** run `supabase db reset` 
+- **NEVER** use any database reset commands
+- **NEVER** run `npx supabase` commands
+
+### Destructive Operations
+- **NEVER** drop tables without explicit user permission
+- **NEVER** drop columns without explicit user permission
+- **NEVER** truncate tables
+- **NEVER** run destructive SQL operations
+
+## ✅ SAFE OPERATIONS
+
+### Migration-Based Changes
+- Create new migrations using `supabase migration new <name>`
+- Apply migrations using `supabase db push` (if available)
+- Use `IF EXISTS` and `IF NOT EXISTS` clauses for safety
+- Never modify existing migration files
+
+### Supabase Client Usage
+- Use `supabase.from('table').select()` for queries
+- Use `supabase.from('table').insert()` for inserts
+- Use `supabase.from('table').update()` for updates
+- Use `supabase.from('table').delete()` for deletes
+- Always handle errors properly in client code
+
+### Data Safety Guidelines
+- Always backup data before major changes
+- Use soft deletes instead of hard deletes when possible
+- Preserve user data integrity at all costs
+- Test all changes in development environment first
+
+## 🚨 Emergency Procedures
+
+If database issues occur:
+1. Check Supabase dashboard for errors
+2. Review migration history
+3. Create new migration to fix issues
+4. Contact user before any destructive operations
+5. **NEVER** reset database without explicit user consent
+
+## Migration Best Practices
+
+- Always create new migration files for schema changes
+- Test migrations on development data first
+- Include rollback instructions in migration comments
+- Use descriptive migration names
+- Keep migrations atomic and reversible# Supabase Database Management Rules
+
+## 🚫 PROHIBITED ACTIONS
+
+### Database Reset Commands
+- **NEVER** run `npx supabase db reset`
+- **NEVER** run `supabase db reset` 
+- **NEVER** use any database reset commands
+- **NEVER** run `npx supabase` commands
+
+### Destructive Operations
+- **NEVER** drop tables without explicit user permission
+- **NEVER** drop columns without explicit user permission
+- **NEVER** truncate tables
+- **NEVER** run destructive SQL operations
+
+## ✅ SAFE OPERATIONS
+
+### Migration-Based Changes
+- Create new migrations using `supabase migration new <name>`
+- Apply migrations using `supabase db push` (if available)
+- Use `IF EXISTS` and `IF NOT EXISTS` clauses for safety
+- Never modify existing migration files
+
+### Supabase Client Usage
+- Use `supabase.from('table').select()` for queries
+- Use `supabase.from('table').insert()` for inserts
+- Use `supabase.from('table').update()` for updates
+- Use `supabase.from('table').delete()` for deletes
+- Always handle errors properly in client code
+
+### Data Safety Guidelines
+- Always backup data before major changes
+- Use soft deletes instead of hard deletes when possible
+- Preserve user data integrity at all costs
+- Test all changes in development environment first
+
+## 🚨 Emergency Procedures
+
+If database issues occur:
+1. Check Supabase dashboard for errors
+2. Review migration history
+3. Create new migration to fix issues
+4. Contact user before any destructive operations
+5. **NEVER** reset database without explicit user consent
+
+## Migration Best Practices
+
+- Always create new migration files for schema changes
+- Test migrations on development data first
+- Include rollback instructions in migration comments
+- Use descriptive migration names
+- Keep migrations atomic and reversible
